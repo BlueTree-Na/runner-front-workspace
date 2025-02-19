@@ -24,6 +24,7 @@ const ProfileUpdate = () => {
   const [phone, setPhone] = useState("");
   const [profileImage, setProfileImage] = useState("/default-profile.png");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     axios
@@ -33,17 +34,23 @@ const ProfileUpdate = () => {
         },
       })
       .then((response) => {
+        console.log("DB데이터:", response);
+
         const data = response.data;
         setNickName(data.nickName || "");
         setGender(data.gender || "");
         setPhone(data.phone || "");
-
-        if (data.profileImage) {
-          setProfileImage(data.profileImage);
-        }
+        setProfileImage(data.profileImage || "/default-profile.png");
       })
+      //if (data.profileImage) {
+      //  setProfileImage(data.profileImage);
+      // }
+      //  })
       .catch((error) => {
         console.error("프로필 정보를 불러오는데 실패했습니다.", error);
+      })
+      .finally(() => {
+        setLoading(false); // 데이터 로딩 완료
       });
   }, [auth.accessToken]);
 
@@ -81,7 +88,9 @@ const ProfileUpdate = () => {
         alert("회원 정보 수정에 실패하였습니다.");
       });
   };
-
+  if (loading) {
+    return <h2>로딩 중입니다.</h2>; // 데이터 로딩이 끝나야 화면 표시
+  }
   return (
     <JoinContainer>
       <h2>회원정보 수정</h2>
@@ -108,8 +117,8 @@ const ProfileUpdate = () => {
         <JoinLabel>성별</JoinLabel>
         <JoinSelect value={gender} onChange={(e) => setGender(e.target.value)}>
           <option value="">선택</option>
-          <option value="남성">남성</option>
-          <option value="여성">여성</option>
+          <option value="M">M</option>
+          <option value="F">F</option>
         </JoinSelect>
 
         <JoinLabel>전화번호</JoinLabel>

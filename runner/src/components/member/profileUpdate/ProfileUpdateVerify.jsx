@@ -24,7 +24,7 @@ const ProfileUpdateVerify = () => {
 
     axios
       .post(
-        "http://localhost/members/verifyPassword", // 백엔드의 비밀번호 검증 엔드포인트
+        "http://localhost/members/verify-password", // 백엔드의 비밀번호 검증 엔드포인트
         { currentPassword },
         {
           headers: {
@@ -45,7 +45,7 @@ const ProfileUpdateVerify = () => {
       })
       .catch((error) => {
         console.error("비밀번호 검증 오류:", error);
-        setError("비밀번호 검증 중 오류가 발생했습니다.");
+        setError("비밀번호를 확인해주세요.");
       });
   };
 

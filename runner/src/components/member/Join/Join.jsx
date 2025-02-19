@@ -10,8 +10,9 @@ import {
   JoinSelect,
   Title,
 } from "./Join.styles";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 const Join = () => {
+  const navigate = useNavigate();
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
   const [pwdConfirm, setPwdConfirm] = useState("");
@@ -20,7 +21,7 @@ const Join = () => {
   const [gender, setGender] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-
+  const [errors, setErrors] = useState("");
   const [idError, setIdError] = useState("");
   const [pwdError, setPwdError] = useState("");
   const [nameError, setNameError] = useState("");
@@ -31,8 +32,12 @@ const Join = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // 비밀번호 확인 (프론트엔드에서 먼저 체크)
     if (userPwd !== pwdConfirm) {
-      setPwdError("비밀번호가 일치하지 않습니다.");
+      setErrors((prev) => ({
+        ...prev,
+        userPwd: "비밀번호가 일치하지 않습니다.",
+      }));
       return;
     }
 
@@ -48,29 +53,19 @@ const Join = () => {
       })
       .then((response) => {
         //console.log(response);
-        alert(response.data);
-        Navigate("/main");
-        setIdError("");
-        setPwdError("");
-        setNameError("");
-        setNickNameError("");
-        setEmailError("");
-        setPhoneError("");
+        alert("회원가입이 완료되었습니다.");
+        setErrors({});
+
+        navigate("/login");
       })
       .catch((error) => {
-        console.log(error);
         if (error.response && error.response.data) {
-          const errors = error.response.data;
-          setIdError(errors.userId || "");
-          setPwdError(errors.userPwd || "");
-          setNameError(errors.userName || "");
-          setNickNameError(errors.nickName || "");
-          setEmailError(errors.email || "");
-          setPhoneError(errors.phone || "");
+          setErrors(error.response.data); // 백엔드에서 받은 오류 메시지를 상태에 저장
+        } else {
+          alert("회원가입에 실패했습니다. 다시 시도해주세요.");
         }
       });
   };
-
   return (
     <JoinContainer>
       <Title>회원가입</Title>
@@ -83,30 +78,37 @@ const Join = () => {
           placeholder="이름을 입력하세요."
           required
         />
-        {nameError && <JoinMessage>{nameError}</JoinMessage>} <br />
+        {errors.phone && <JoinMessage>{errors.phone}</JoinMessage>} <br />
         <JoinLabel>아이디*</JoinLabel>
         <JoinInput
           type="text"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
           placeholder="아이디를 입력하세요."
+          maxLength="15"
         />
-        {idError && <JoinMessage>{idError}</JoinMessage>} <br />
+        {errors.userId && <JoinMessage>{errors.userId}</JoinMessage>}
+        {errors.duplicate && <JoinMessage>{errors.duplicate}</JoinMessage>}
+        <br />
         <JoinLabel>비밀번호*</JoinLabel>
         <JoinInput
           type="password"
           value={userPwd}
           onChange={(e) => setUserPwd(e.target.value)}
           placeholder="비밀번호를 입력하세요."
+          maxLength="20"
         />
+        {errors.userPwd && <JoinMessage>{errors.userPwd}</JoinMessage>} <br />
         <JoinLabel>비밀번호 확인*</JoinLabel>
         <JoinInput
           type="password"
           value={pwdConfirm}
           onChange={(e) => setPwdConfirm(e.target.value)}
           placeholder="비밀번호를 입력하세요"
+          maxLength="20"
         />
-        {pwdError && <JoinMessage>{pwdError}</JoinMessage>} <br />
+        {errors.pwdConfirm && <JoinMessage>{errors.pwdConfirm}</JoinMessage>}{" "}
+        <br />
         <JoinLabel>닉네임*</JoinLabel>
         <JoinInput
           type="text"
@@ -114,19 +116,21 @@ const Join = () => {
           onChange={(e) => setNickName(e.target.value)}
           placeholder="닉네임을 입력하세요."
         />
-        {nickNameError && <JoinMessage>{nickNameError}</JoinMessage>} <br />
+        {errors.nickName && <JoinMessage>{errors.nickName}</JoinMessage>}
+        {errors.duplicate && <JoinMessage>{errors.duplicate}</JoinMessage>}{" "}
+        <br />
         <JoinLabel>성별</JoinLabel>
         <JoinSelect value={gender} onChange={(e) => setGender(e.target.value)}>
           <option value="">선택</option>
-          <option value="남성">남성</option>
-          <option value="여성">여성</option>
+          <option value="F">F</option>
+          <option value="M">M</option>
         </JoinSelect>
         <JoinLabel>이메일*</JoinLabel>
         <JoinInput
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일을 입력하세요."
+          placeholder="test@naver.com"
         />
         {emailError && <JoinMessage>{emailError}</JoinMessage>} <br />
         <JoinLabel>전화번호*</JoinLabel>
@@ -134,9 +138,10 @@ const Join = () => {
           type="text"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
-          placeholder="전화번호를 입력하세요."
+          placeholder="010-1234-5678"
+          maxLength="13"
         />
-        {phoneError && <JoinMessage>{phoneError}</JoinMessage>} <br />
+        {errors.phone && <JoinMessage>{errors.phone}</JoinMessage>} <br />
         <JoinButton type="submit">가입하기</JoinButton>
       </JoinWrapper>
     </JoinContainer>

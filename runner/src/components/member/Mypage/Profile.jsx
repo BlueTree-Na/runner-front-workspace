@@ -18,14 +18,21 @@ const Profile = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("/api/user/profile")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("API 응답 데이터:", data);
-        setNickname(data.nickname);
-        setProfileImage(data.profileImage || "/default-profile.png");
+    // ✅ DB에서 닉네임과 프로필 사진 가져오기
+    axios
+      .get("/api/user/profile", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // JWT 토큰 추가 (필요 시)
+        },
       })
-      .catch((error) => console.error("API 호출 오류:", error));
+      .then((response) => {
+        console.log("API 응답 데이터:", response.data);
+        setNickname(response.data.nickname); // ✅ 닉네임 업데이트
+        setProfileImage(response.data.profileImage || "/default-profile.png"); // ✅ 사진 없으면 기본 이미지
+      })
+      .catch((error) => {
+        console.error("API 호출 오류:", error);
+      });
   }, []);
 
   // 프로필 이미지 클릭 시 파일 선택 다이얼로그 열기
@@ -53,11 +60,13 @@ const Profile = () => {
 
       axios
         .post("/api/user/uploadProfile", formData, {
-          headers: { "Content-Type": "multipart/form-data" },
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // JWT 토큰 추가 (필요 시)
+          },
         })
         .then((response) => {
           console.log("프로필 이미지 업로드 성공:", response.data);
-
           setSelectedFile(null);
         })
         .catch((error) => {
@@ -82,7 +91,7 @@ const Profile = () => {
         src={profileImage}
         alt="Profile"
         onClick={handleImageClick}
-        onError={(e) => (e.target.src = "/default-profile.png")}
+        onError={(e) => (e.target.src = "/default-profile.png")} // 이미지 로드 실패 시 기본 이미지로 설정
       />
       {/* 숨겨진 파일 입력 */}
       <input
