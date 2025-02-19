@@ -2,19 +2,23 @@ import { useState, useContext } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import {
-  LoginButton,
   LoginContainer,
   LoginForm,
   LoginInput,
+  Title,
+  LoginButton,
 } from "./Login.styles";
-import { Form } from "react-router-dom";
-import { Nickname } from "../Mypage/Profile.styles";
+import NaverLogin from "./NaverLogin";
 
 const Login = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
-
   const { login } = useContext(AuthContext);
+
+  // state 임의 문자열 생성
+  const generateRandomState = (length = 16) => {
+    return [...Array(length)].map(() => Math.random().toString(36)[2]).join("");
+  };
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -37,9 +41,23 @@ const Login = () => {
       });
   };
 
+  // 네이버 로그인 페이지로 이동하는 함수 (Authorization Code Flow)
+  const handleNaverLogin = () => {
+    const CLIENT_ID = "S55AvttZtL3b87wDRQaD";
+    const CALLBACK_URL = "http://localhost:80/members/naver/oauth";
+    const STATE = generateRandomState(16);
+
+    window.location.href =
+      `https://nid.naver.com/oauth2.0/authorize` +
+      `?response_type=code` +
+      `&client_id=${CLIENT_ID}` +
+      `&redirect_uri=${encodeURIComponent(CALLBACK_URL)}` +
+      `&state=${STATE}`;
+  };
+
   return (
     <LoginContainer>
-      <h2>로그인</h2>
+      <Title>로그인</Title>
       <LoginForm onSubmit={handleLogin}>
         <LoginInput
           type="text"
@@ -57,6 +75,11 @@ const Login = () => {
         />
         <LoginButton type="submit">로그인</LoginButton>
       </LoginForm>
+
+      {/* 네이버 로그인 버튼 */}
+      <div style={{ marginTop: "20px" }}>
+        <NaverLogin onClick={handleNaverLogin}>네이버 로그인</NaverLogin>
+      </div>
     </LoginContainer>
   );
 };

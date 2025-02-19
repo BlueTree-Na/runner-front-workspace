@@ -46,13 +46,36 @@ export const FileInput = styled.label`
   display: inline-block;
   margin-top: 10px;
   padding: 8px 12px;
-  background-color: #33bfe8;
+  background-color: rgb(0, 162, 255);
   color: white;
   border-radius: 4px;
   cursor: pointer;
   font-size: 14px;
 
   &:hover {
-    background-color: rgb(0, 162, 255);
+    background-color: rgb(2, 55, 85);
+  }
+`;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+export const SaveButton = styled.button`
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: rgb(0, 200, 150);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+
+  &:hover {
+    background-color: rgb(0, 150, 120);
   }
 `;

@@ -22,18 +22,25 @@ export const LoginInput = styled.input`
 
 export const LoginButton = styled.button`
   padding: 10px;
-  background-color: #33bfe8;
+  background-color: rgb(0, 162, 255);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 
   &:hover {
-    background-color: rgb(0, 162, 255);
+    background-color: rgb(2, 55, 85);
   }
 `;
 
 export const ErrorMessage = styled.p`
   color: red;
   margin-bottom: 10px;
+`;
+
+export const Title = styled.h2`
+  font-size: 30px;
+  font-weight: 550;
+  margin-bottom: 20px;
+  text-align: left;
 `;

@@ -8,6 +8,7 @@ import {
   JoinWrapper,
   JoinMessage,
   JoinSelect,
+  Title,
 } from "./Join.styles";
 import { Navigate } from "react-router-dom";
 const Join = () => {
@@ -72,7 +73,7 @@ const Join = () => {
 
   return (
     <JoinContainer>
-      <h2>회원가입</h2>
+      <Title>회원가입</Title>
       <JoinWrapper onSubmit={handleSubmit}>
         <JoinLabel>이름*</JoinLabel>
         <JoinInput

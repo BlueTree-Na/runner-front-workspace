@@ -1,60 +1,79 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import {
   ProfileCard,
   ProfileImage,
   Nickname,
-  HiddenInput,
   FileInput,
+  ButtonContainer,
+  SaveButton,
 } from "./Profile.styles";
 
 const Profile = () => {
   const [nickname, setNickname] = useState("닉네임");
   const [profileImage, setProfileImage] = useState("/default-profile.png");
-  const [selectedFile, setSelectFile] = useState(null);
-  const navigate = useNavigate(); // ✅ 네비게이션 함수 사용
+  const [selectedFile, setSelectedFile] = useState(null);
+  const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("/api/user/profile")
       .then((response) => response.json())
       .then((data) => {
-        console.log("API 응답 데이터:", data); // 콘솔에서 API 데이터 확인
+        console.log("API 응답 데이터:", data);
         setNickname(data.nickname);
         setProfileImage(data.profileImage || "/default-profile.png");
       })
       .catch((error) => console.error("API 호출 오류:", error));
   }, []);
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-
-    if (!file) return;
-
-    setSelectFile(file);
-    const imageUrl = URL.createObjectURL(file);
-    setProfileImage(imageUrl); // 화면에서 즉시 미리보기 반영
-
-    // 파일을 서버로 업로드
-    const formData = new FormData();
-    formData.append("file", file);
-
-    fetch("/api/user/upload-profile", {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("업로드 성공:", data);
-        setProfileImage(data.profileImageUrl); // 서버에서 반환된 이미지 URL 적용
-      })
-      .catch((error) => {
-        console.error("업로드 실패:", error);
-      });
+  // 프로필 이미지 클릭 시 파일 선택 다이얼로그 열기
+  const handleImageClick = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
   };
 
-  // 설정 버튼 클릭
-  const goToEditPage = () => {
-    navigate("/memberUpdate");
+  // 파일 선택 시 미리보기 및 상태 업데이트
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setProfileImage(imageUrl);
+    }
+  };
+
+  // 저장 버튼 클릭 시 서버에 이미지 업로드
+  const handleSaveImage = () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append("profileImage", selectedFile);
+
+      axios
+        .post("/api/user/uploadProfile", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        })
+        .then((response) => {
+          console.log("프로필 이미지 업로드 성공:", response.data);
+
+          setSelectedFile(null);
+        })
+        .catch((error) => {
+          console.error("프로필 이미지 업로드 실패:", error);
+        });
+    }
+  };
+
+  // 개인정보수정 버튼
+  const goToUpdatePage = () => {
+    navigate("/ProfileUpdateVerify");
+  };
+
+  // 비밀번호변경 버튼
+  const goToPassWordPage = () => {
+    navigate("/passwordUpdate");
   };
 
   return (
@@ -62,23 +81,27 @@ const Profile = () => {
       <ProfileImage
         src={profileImage}
         alt="Profile"
+        onClick={handleImageClick}
         onError={(e) => (e.target.src = "/default-profile.png")}
       />
-      <Nickname>{nickname}</Nickname>
-
-      {/* ✅ 설정 버튼 클릭 시 수정 페이지로 이동 */}
-      <FileInput onClick={goToEditPage}>설정</FileInput>
-
-      {/* 파일 선택 버튼 */}
-      <HiddenInput
+      {/* 숨겨진 파일 입력 */}
+      <input
         type="file"
+        style={{ display: "none" }}
+        ref={fileInputRef}
+        onChange={handleFileChange}
         accept="image/*"
-        onChange={handleImageUpload}
-        id="fileInput"
       />
-      <FileInput htmlFor="fileInput">프로필 변경</FileInput>
+      {/* 파일 선택 후 저장 버튼 표시 */}
+      {selectedFile && (
+        <SaveButton onClick={handleSaveImage}>프로필 이미지 저장</SaveButton>
+      )}
+      <Nickname>{nickname}</Nickname>
+      <ButtonContainer>
+        <FileInput onClick={goToUpdatePage}>개인정보수정</FileInput>
+        <FileInput onClick={goToPassWordPage}>비밀번호변경</FileInput>
+      </ButtonContainer>
     </ProfileCard>
   );
 };
-
 export default Profile;

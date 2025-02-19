@@ -6,11 +6,12 @@ const Sidebar2 = () => {
   const navigate = useNavigate();
 
   const menuItems = [
-    { name: "개인정보수정", path: "/profile" },
+    { name: "개인정보수정", path: "/profileUpdate" },
     { name: "내가 쓴 글", path: "/my" },
     { name: "내가 쓴 글", path: "/my" },
     { name: "랜덤매칭", path: "/reviews" },
     { name: "관리자", path: "/favorites" },
+    { name: "회원탈퇴", path: "/deleteAccount" },
   ];
 
   return (
