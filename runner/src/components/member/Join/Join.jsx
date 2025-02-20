@@ -122,8 +122,8 @@ const Join = () => {
         <JoinLabel>성별</JoinLabel>
         <JoinSelect value={gender} onChange={(e) => setGender(e.target.value)}>
           <option value="">선택</option>
-          <option value="F">F</option>
-          <option value="M">M</option>
+          <option value="남성">남성</option>
+          <option value="여성">여성</option>
         </JoinSelect>
         <JoinLabel>이메일*</JoinLabel>
         <JoinInput

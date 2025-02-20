@@ -26,11 +26,7 @@ function App() {
           <Route path="NaverLogin" element={<NaverLogin />} />
           <Route path="NaverCallback" element={<NaverCallback />} />
           <Route path="passwordUpdate" element={<ChangePassword />} />
-          네이버 로그인 콜백 처리 경로
-          <Route
-            path="naver-callback"
-            element={<h2>네이버 로그인 처리 중...</h2>}
-          />
+
           <Route path="profileUpdateVerify" element={<ProfileUpdateVerify />} />
           <Route path="profileUpate" element={<ProfileUpdate />} />
           <Route path="deleteAccount" element={<DeleteAccount />} />
