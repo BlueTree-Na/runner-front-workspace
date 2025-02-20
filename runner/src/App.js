@@ -12,7 +12,9 @@ import Login from "./components/member/Login/Login";
 import ChangePassword from "./components/member/profileUpdate/PasswordUpdate";
 import ProfileUpdateVerify from "./components/member/profileUpdate/ProfileUpdateVerify";
 import DeleteAccount from "./components/member/Mypage/DeleteAccount";
-
+import ScheduleList from "./components/Schedule/ScheduleList";
+import ScheduleDetail from "./components/Schedule/ScheduleDetail";
+import RunningList from "./components/RunningCourse/RunningList";
 function App() {
   return (
     <AuthProvider>
@@ -30,6 +32,10 @@ function App() {
           <Route path="profileUpdateVerify" element={<ProfileUpdateVerify />} />
           <Route path="profileUpate" element={<ProfileUpdate />} />
           <Route path="deleteAccount" element={<DeleteAccount />} />
+
+          <Route path="/course" element={<RunningList />} />
+          <Route path="/schedule" element={<ScheduleList />} />
+          <Route path="/schedule/:id" element={<ScheduleDetail />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
