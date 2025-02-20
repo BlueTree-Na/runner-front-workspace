@@ -1,39 +1,45 @@
-// import logo from "./logo.avif";
+import logo from "./logo.svg";
 import "./App.css";
+import { AuthProvider } from "./components/member/context/AuthContext";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ProfileUpdate from "./components/member/profileUpdate/ProfileUpdate";
+import Mypage from "./components/member/Mypage/Mypage";
+import Join from "./components/member/Join/Join";
+import CollapsibleExample from "./components/Header/Header";
+import NaverLogin from "./components/member/Login/NaverLogin";
+import NaverCallback from "./components/member/Login/NaverCallback";
+import Login from "./components/member/Login/Login";
+import ChangePassword from "./components/member/profileUpdate/PasswordUpdate";
+import ProfileUpdateVerify from "./components/member/profileUpdate/ProfileUpdateVerify";
+import DeleteAccount from "./components/member/Mypage/DeleteAccount";
 import ScheduleList from "./components/Schedule/ScheduleList";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScheduleDetail from "./components/Schedule/ScheduleDetail";
 import RunningList from "./components/RunningCourse/RunningList";
-import PlaceMap from "./components/KakaoMapAPI/PlaceMarking/PlaceMap";
 
 function App() {
   return (
-    <div className="App">
-      {/* <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <img src={logo} className="App-logo2" alt="logo" />
-        <img src={logo} className="App-logo3" alt="logo" />
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          <code>컴마 찍어야겠다</code>
-        </p>
-        <a
-          className="App-link"
-          href="https://www.naver.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          성취도 우수자의 세계
-        </a>
-      </header> */}
+    <AuthProvider>
       <BrowserRouter>
+        <CollapsibleExample />
         <Routes>
+          <Route path="mypage" element={<Mypage />} />
+          <Route path="login" element={<Login />} />
+          <Route path="join" element={<Join />} />
+          <Route path="profileUpdate" element={<ProfileUpdate />} />
+          <Route path="NaverLogin" element={<NaverLogin />} />
+          <Route path="NaverCallback" element={<NaverCallback />} />
+          <Route path="passwordUpdate" element={<ChangePassword />} />
+
+          <Route path="profileUpdateVerify" element={<ProfileUpdateVerify />} />
+          <Route path="profileUpate" element={<ProfileUpdate />} />
+          <Route path="deleteAccount" element={<DeleteAccount />} />
+
           <Route path="/course" element={<RunningList />} />
           <Route path="/schedule" element={<ScheduleList />} />
           <Route path="/schedule/:id" element={<ScheduleDetail />} />
         </Routes>
       </BrowserRouter>
-    </div>
+    </AuthProvider>
   );
 }
 
