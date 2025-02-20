@@ -4,6 +4,7 @@ import ScheduleList from "./components/Schedule/ScheduleList";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScheduleDetail from "./components/Schedule/ScheduleDetail";
 import RunningList from "./components/RunningCourse/RunningList";
+import PlaceMap from "./components/KakaoMapAPI/PlaceMarking/PlaceMap";
 
 function App() {
   return (

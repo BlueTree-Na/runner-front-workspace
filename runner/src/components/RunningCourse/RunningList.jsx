@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
+import PlaceMap from "../KakaoMapAPI/PlaceMarking/PlaceMap";
 
 const CourseListUl = styled.ul`
   color: white;
@@ -61,6 +62,7 @@ const RunningList = () => {
 
   return (
     <>
+      <PlaceMap />
       {courseList.map((course) => {
         return (
           <>

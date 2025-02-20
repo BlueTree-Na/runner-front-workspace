@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import RunningMap from "../KakaoMapAPI/RunningMap";
 
 const ScheduleDetail = () => {
   const { id } = useParams();
@@ -12,7 +13,7 @@ const ScheduleDetail = () => {
       .get(`http://localhost/schedule/${id}`, {
         headers: {
           Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzanNqIiwiaWF0IjoxNzM5NzYxMjk4LCJleHAiOjE3Mzk4NDc2OTh9.8wV5yhrzpTFCWm6LF0hmxEgwP9R2BC8xXNNzgAAy5Cc",
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4",
         },
       })
       .then((response) => {
@@ -36,7 +37,7 @@ const ScheduleDetail = () => {
       { ...schedule },
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzanNqIiwiaWF0IjoxNzM5NzYxMjk4LCJleHAiOjE3Mzk4NDc2OTh9.8wV5yhrzpTFCWm6LF0hmxEgwP9R2BC8xXNNzgAAy5Cc`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4`,
         },
       }
     );
@@ -117,6 +118,9 @@ const ScheduleDetail = () => {
             name="place"
             onChange={handleInput}
           ></input>
+          <br />
+          <RunningMap lat={schedule.placeLat} lng={schedule.placelng} />
+          <br />
           <br />
           위도 : <input type="text" value={schedule.placeLat}></input>
           <br />
