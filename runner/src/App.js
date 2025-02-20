@@ -15,6 +15,7 @@ import DeleteAccount from "./components/member/Mypage/DeleteAccount";
 import ScheduleList from "./components/Schedule/ScheduleList";
 import ScheduleDetail from "./components/Schedule/ScheduleDetail";
 import RunningList from "./components/RunningCourse/RunningList";
+import ScheduleForm from "./components/Schedule/ScheduleForm";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/course" element={<RunningList />} />
           <Route path="/schedule" element={<ScheduleList />} />
           <Route path="/schedule/:id" element={<ScheduleDetail />} />
+          <Route path="/scheduleForm" element={<ScheduleForm />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-import PlaceMap from "../KakaoMapAPI/PlaceMarking/PlaceMap";
+import { LoadMoreButton } from "../Schedule/ScheduleList";
+import RunningMap from "../KakaoMapAPI/RunningMap";
 
 const CourseListUl = styled.ul`
   color: white;
@@ -62,8 +63,7 @@ const RunningList = () => {
 
   return (
     <>
-      <PlaceMap />
-      {courseList.map((course) => {
+      {courseList.map((course, i) => {
         return (
           <>
             <CourseListDiv>
@@ -110,18 +110,19 @@ const RunningList = () => {
                 <CourseListLi red={285}>
                   지번주소 : {course.loadAddr}
                 </CourseListLi>
-                <CourseListLi red={305}>
-                  경로지점위도 : {course.courseLat}
-                </CourseListLi>
-                <CourseListLi red={325}>
-                  경로지점경도 : {course.courseLon}
-                </CourseListLi>
+                <RunningMap
+                  lat={course.courseLat}
+                  lng={course.courseLon}
+                  mapId={i}
+                />
               </CourseListUl>
             </CourseListDiv>
           </>
         );
       })}
-      <button onClick={handlePage}></button>
+      <LoadMoreButton style={{ margin: "auto" }} onClick={handlePage}>
+        더보기
+      </LoadMoreButton>
     </>
   );
 };
