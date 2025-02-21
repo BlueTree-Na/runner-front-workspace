@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import {
   LoginContainer,
   LoginForm,
@@ -13,32 +14,19 @@ const Login = () => {
   const [userId, setUserId] = useState("");
   const [userPwd, setUserPwd] = useState("");
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // 네이버 로그인 스크립트 동적 로드
-    const script = document.createElement("script");
-    script.src = "https://static.nid.naver.com/js/naverLogin_implicit-1.0.3.js";
-    script.async = true;
-    script.charset = "utf-8";
-    document.body.appendChild(script);
-
-    script.onload = () => {
-      if (window.naver_id_login) {
-        const naverLogin = new window.naver_id_login(
-          "YOUR_CLIENT_ID",
-          "YOUR_REDIRECT_URI"
-        );
-
-        naverLogin.setButton("green", 3, 40); // 버튼 색상 및 크기 설정
-        naverLogin.setState(Math.random().toString(36).substring(2, 18)); // 상태 토큰 설정
-        naverLogin.setPopup(); // 팝업 방식 설정
-        naverLogin.init_naver_id_login(); // 네이버 로그인 초기화
-      }
-    };
-
-    return () => {
-      document.body.removeChild(script);
-    };
+    // script.src = "https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.2.js";
+    // if (window.naver) {
+    //   const naverLogin = new window.naver.LoginWithNaverId({
+    //     clientId: "S55AvttZtL3b87wDRQaD",
+    //     callbackUrl: "http://localhost:3000/auth",
+    //     isPopup: false,
+    //     loginButton: { color: "green", type: 3, height: 40 },
+    //   });
+    //   naverLogin.init();
+    // }
   }, []);
 
   const handleLogin = (e) => {
@@ -49,12 +37,17 @@ const Login = () => {
         userPwd: userPwd,
       })
       .then((response) => {
+        console.log("서버 응답:", response.data);
+        console.log("로그인 성공, 메인으로 이동");
+
         const { username, tokens } = response.data;
         login(username, tokens.accessToken, tokens.refreshToken);
         localStorage.setItem("nickname", username);
         alert(`${username}님 환영합니다!`);
-        window.location = "/";
+
+        navigate("/main"); // 또는 window.location.href = "/main";
       })
+
       .catch((error) => {
         console.log(error);
         alert("로그인에 실패하였습니다. 아이디와 패스워드를 확인해주세요");
