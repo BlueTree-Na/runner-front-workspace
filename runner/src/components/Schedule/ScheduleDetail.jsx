@@ -1,6 +1,9 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import RunningMap from "../KakaoMapAPI/RunningMap";
+import { AddButton, ListDiv, Message } from "./ScheduleList";
+import { format } from "date-fns";
 
 const ScheduleDetail = () => {
   const { id } = useParams();
@@ -12,7 +15,7 @@ const ScheduleDetail = () => {
       .get(`http://localhost/schedule/${id}`, {
         headers: {
           Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzanNqIiwiaWF0IjoxNzM5NzYxMjk4LCJleHAiOjE3Mzk4NDc2OTh9.8wV5yhrzpTFCWm6LF0hmxEgwP9R2BC8xXNNzgAAy5Cc",
+            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4",
         },
       })
       .then((response) => {
@@ -36,7 +39,7 @@ const ScheduleDetail = () => {
       { ...schedule },
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzanNqIiwiaWF0IjoxNzM5NzYxMjk4LCJleHAiOjE3Mzk4NDc2OTh9.8wV5yhrzpTFCWm6LF0hmxEgwP9R2BC8xXNNzgAAy5Cc`,
+          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4`,
         },
       }
     );
@@ -66,84 +69,88 @@ const ScheduleDetail = () => {
 
   return (
     <>
-      <h2>일정 세부 정보</h2>
       {
-        <form method="put" onSubmit={handleScheduleUpdate}>
-          일정번호 : <input type="text" value={schedule.scheduleNo}></input>
-          <br />
-          작성자 : <input type="text" value={schedule.scheduleWriter}></input>
-          <br />
-          제목 :{" "}
-          <input
-            type="text"
-            value={schedule.scheduleTitle}
-            name="scheduleTitle"
-            onChange={handleInput}
-          ></input>
-          <br />
-          내용 :{" "}
-          <input
-            type="text"
-            value={schedule.scheduleContent}
-            onChange={handleInput}
-            name="scheduleContent"
-          ></input>
-          <br />
-          일정 당일 :
-          <input
-            type="datetime-local"
-            name="selectDate"
-            value={schedule.selectDate}
-            onChange={handleInput}
-          ></input>
-          <br />
-          등록일 :
-          <input type="datetime-local" value={schedule.enrollDate}></input>
-          <br />
-          조회수 : <input type="text" value={schedule.count}></input>
-          <br />
-          참여 최대인원 :
-          <input
-            type="number"
-            value={schedule.maxIncount}
-            name="maxIncount"
-            onChange={handleInput}
-          ></input>
-          <br />
-          가는곳 :{" "}
-          <input
-            type="text"
-            value={schedule.place}
-            name="place"
-            onChange={handleInput}
-          ></input>
-          <br />
-          위도 : <input type="text" value={schedule.placeLat}></input>
-          <br />
-          경도 : <input type="text" value={schedule.placeLon}></input>
-          <br />
-          장소 주소:{" "}
-          <input
-            type="text"
-            value={schedule.placeAddr}
-            name="placeAddr"
-            onChange={handleInput}
-          ></input>
-          <br />
-          {<button type="submit">수정하기</button>}
-          {
-            <button type="button" onClick={handleDelete}>
+        <ListDiv>
+          <h2>일정 세부 정보</h2>
+          <form method="put" onSubmit={handleScheduleUpdate}>
+            일정번호 : <input type="text" value={schedule.scheduleNo}></input>
+            <br />
+            작성자 : <input type="text" value={schedule.scheduleWriter}></input>
+            <br />
+            제목 :{" "}
+            <input
+              type="text"
+              value={schedule.scheduleTitle}
+              name="scheduleTitle"
+              onChange={handleInput}
+            ></input>
+            <br />
+            내용 :{" "}
+            <input
+              value={schedule.scheduleContent}
+              onChange={handleInput}
+              name="scheduleContent"
+            ></input>
+            <br />
+            일정 당일 :
+            <input
+              type="datetime-local"
+              name="selectDate"
+              value={schedule.selectDate}
+              onChange={handleInput}
+            ></input>
+            <br />
+            참여 최대인원 :
+            <input
+              type="number"
+              value={schedule.maxIncount}
+              name="maxIncount"
+              onChange={handleInput}
+            ></input>
+            <RunningMap
+              lat={schedule.placeLat}
+              lng={schedule.placeLon}
+              mapId={1}
+            />
+            가는곳 :{" "}
+            <input
+              type="text"
+              value={schedule.place}
+              name="place"
+              onChange={handleInput}
+            ></input>
+            <br />
+            장소 주소:{" "}
+            {schedule.placeAddr && (
+              <input
+                type="text"
+                value={schedule.placeAddr}
+                name="placeAddr"
+                onChange={handleInput}
+              ></input>
+            )}
+            <Message>
+              등록일 :{" "}
+              {schedule.enrollDate &&
+                format(
+                  new Date(schedule.enrollDate),
+                  "yyyy년 MM월 dd일 a hh시 mm분"
+                )}
+            </Message>
+            <Message>조회수 : {schedule.count}</Message>
+            <AddButton type="submit">수정하기</AddButton>
+            <AddButton type="button" onClick={handleDelete}>
               삭제하기
-            </button>
-          }
-          <button type="button" onClick={() => navi("/schedule")}>
-            이전으로
-          </button>
-        </form>
+            </AddButton>
+            <AddButton type="button" onClick={() => navi("/schedule")}>
+              이전으로
+            </AddButton>
+          </form>
+          <div>
+            <AddButton onClick={handleScheduleEncount}>일정 참여</AddButton>
+          </div>
+        </ListDiv>
       }
-      <div>
-        <button onClick={handleScheduleEncount}>일정 참여</button>
-      </div>
     </>
   );
 };

@@ -1,6 +1,77 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
+import { format } from "date-fns";
+
+export const PostTitle = styled.a`
+  font-size: 1.2em;
+  color: #3498db;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+export const LoadMoreButton = styled.button`
+  display: block;
+  margin: 20px auto 0;
+  padding: 10px 30px;
+  background-color: #3498db;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #2980b9;
+  }
+
+  &:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+  }
+`;
+
+export const AddButton = styled.a`
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #2ecc71;
+  color: #ffffff;
+  border: none;
+  border-radius: 20px;
+  font-size: 1em;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: #27ae60;
+  }
+`;
+
+export const ListDiv = styled.div`
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+
+  @media (max-width: 768px) {
+    margin: 20px;
+    padding: 15px;
+  }
+`;
+
+export const Message = styled.p`
+  text-align: center;
+  color: "#2ecc71";
+  margin-bottom: 20px;
+`;
 
 const ScheduleList = () => {
   const [page, setPage] = useState(0);
@@ -22,46 +93,52 @@ const ScheduleList = () => {
     setPage((page) => page + 1);
   };
 
+  const handleInsertSchedule = () => {};
+
   return (
     <>
-      <h1>하이하이~</h1>
+      <h1>일정 목록</h1>
+      <LoadMoreButton onClick={() => navi("/scheduleForm")}>
+        일정등록
+      </LoadMoreButton>
+
       {scheduleList.map((schedule) => {
         return (
           <>
-            <div onClick={() => navi(`/schedule/${schedule.scheduleNo}`)}>
-              일정번호 :<input type="text" value={schedule.scheduleNo}></input>
-              <br />
-              작성자 :
-              <input type="text" value={schedule.scheduleWriter}></input>
-              <br />
-              제목 :<input type="text" value={schedule.scheduleTitle}></input>
-              <br />
-              내용 :<input type="text" value={schedule.scheduleContent}></input>
-              <br />
-              일정 당일 :<input type="text" value={schedule.selectDate}></input>
-              <br />
-              등록일 :<input type="text" value={schedule.enrollDate}></input>
-              <br />
-              조회수 :<input type="text" value={schedule.count}></input>
-              <br />
-              참여 최대인원 :
-              <input type="text" value={schedule.maxIncount}></input>
-              <br />
-              가는곳 :<input type="text" value={schedule.place}></input>
-              <br />
-              위도 :<input type="text" value={schedule.placeLat}></input>
-              <br />
-              경도 :<input type="text" value={schedule.placeLon}></input>
-              <br />
-              장소 주소:
-              <input type="text" value={schedule.placeAddr}></input>
-              <br />
-            </div>
+            <ListDiv onClick={() => navi(`/schedule/${schedule.scheduleNo}`)}>
+              <PostTitle>제목 : {schedule.scheduleTitle}</PostTitle>
+              <Message>일정번호 : {schedule.scheduleNo}</Message>
+              <Message>작성자 : {schedule.scheduleWriter}</Message>
+              <Message>내용 : {schedule.scheduleContent}</Message>
+              <Message>
+                등록일:{" "}
+                {format(
+                  new Date(schedule.enrollDate),
+                  "yyyy년 MM월 dd일 a hh시 mm분"
+                )}
+              </Message>
+              <Message>
+                일정 당일:{" "}
+                {format(
+                  new Date(schedule.selectDate),
+                  "yyyy년 MM월 dd일 a hh시 mm분"
+                )}
+              </Message>
+              <Message>조회수 :{schedule.count}</Message>
+              <Message>참여 최대인원 : {schedule.maxIncount}</Message>
+              <Message>가는곳 : {schedule.place}</Message>
+              <Message>
+                장소 주소:{" "}
+                {schedule.placeAddr
+                  ? schedule.placeAddr
+                  : "주소가 입력되지 않았습니다."}
+              </Message>
+            </ListDiv>
             <hr />
           </>
         );
       })}
-      <button onClick={handleMoreSchedule}>더보기</button>
+      <LoadMoreButton onClick={handleMoreSchedule}>더보기</LoadMoreButton>
     </>
   );
 };
