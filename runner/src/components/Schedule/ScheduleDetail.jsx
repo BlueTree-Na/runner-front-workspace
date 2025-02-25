@@ -1,21 +1,29 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import RunningMap from "../KakaoMapAPI/RunningMap";
 import { AddButton, ListDiv, Message } from "./ScheduleList";
 import { format } from "date-fns";
+import { AuthContext } from "../member/context/AuthContext";
 
 const ScheduleDetail = () => {
   const { id } = useParams();
   const [schedule, setSchedule] = useState({});
+  const { auth } = useContext(AuthContext);
   const navi = useNavigate();
 
   useEffect(() => {
+    if (!auth.accessToken) {
+      alert("로그인 후 이용 가능합니다.");
+      navi("/login");
+
+      return;
+    }
+
     axios
       .get(`http://localhost/schedule/${id}`, {
         headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4",
+          Authorization: `Bearer ${auth.accessToken}`,
         },
       })
       .then((response) => {
@@ -39,7 +47,7 @@ const ScheduleDetail = () => {
       { ...schedule },
       {
         headers: {
-          Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMTExIiwiaWF0IjoxNzQwMDI4NDc3LCJleHAiOjE3NDAxMTQ4Nzd9.jzufNcDN7K6vrXSfn4Bab_0vccecYBWR7eFDri7v3d4`,
+          Authorization: `Bearer ${auth.accessToken}`,
         },
       }
     );
@@ -138,10 +146,14 @@ const ScheduleDetail = () => {
                 )}
             </Message>
             <Message>조회수 : {schedule.count}</Message>
-            <AddButton type="submit">수정하기</AddButton>
-            <AddButton type="button" onClick={handleDelete}>
-              삭제하기
-            </AddButton>
+            {auth.nickname === schedule.scheduleWriter && (
+              <>
+                <AddButton type="submit">수정하기</AddButton>
+                <AddButton type="button" onClick={handleDelete}>
+                  삭제하기
+                </AddButton>
+              </>
+            )}
             <AddButton type="button" onClick={() => navi("/schedule")}>
               이전으로
             </AddButton>

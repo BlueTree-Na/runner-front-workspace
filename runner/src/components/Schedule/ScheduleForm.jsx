@@ -2,9 +2,28 @@ import RunningMap from "../KakaoMapAPI/RunningMap";
 import { AddButton, ListDiv } from "./ScheduleList";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../member/context/AuthContext";
+const kakao = window;
 
 const ScheduleForm = () => {
   const [schedule, setSchedule] = useState({});
+  const { auth } = useContext(AuthContext);
+
+  // setSchedule(() => {
+  //   return { ...schedule, scheduleWriter: auth.nickname };
+  // });
+
+  useEffect(() => {
+    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
+      const latlng = mouseEvent.latLng;
+      marker.setPosition(latlng);
+      // const message = `클릭한 위치의 위도는 ${latlng.getLat()} 이고, 경도는 ${latlng.getLng()} 입니다`;
+
+      // const resultDiv = document.getElementById("clickLatlng");
+      // resultDiv.innerHTML = message;
+    });
+  }, []);
 
   const handleInput = (e) => {
     const { name, value } = e.target;
@@ -16,10 +35,10 @@ const ScheduleForm = () => {
         [name]: value,
       };
     });
-    // console.log(schedule);
+    console.log(schedule);
   };
 
-  const handleScheduleInsert = (e) => {
+  const handleScheduleInsertForm = (e) => {
     e.preventDefault();
 
     axios.post();
@@ -27,9 +46,9 @@ const ScheduleForm = () => {
 
   return (
     <ListDiv>
-      <h2>일정 세부 정보</h2>
-      <form method="post" onSubmit={handleScheduleInsert}>
-        작성자 : <input type="text" value={schedule.scheduleWriter}></input>
+      <h2>일정 등록</h2>
+      <form method="post" onSubmit={handleScheduleInsertForm}>
+        <input type="hidden" name="scheduleWriter" value={auth.nickname} />
         <br />
         제목 :{" "}
         <input
@@ -61,7 +80,32 @@ const ScheduleForm = () => {
           name="maxIncount"
           onChange={handleInput}
         ></input>
-        <RunningMap lat={schedule.placeLat} lng={schedule.placeLon} mapId={1} />
+        <br />
+        {
+          <ListDiv>
+            <RunningMap
+              lat={schedule.placeLat}
+              lng={schedule.placeLon}
+              mapId={1}
+            />
+          </ListDiv>
+        }
+        위도 :{" "}
+        <input
+          type="text"
+          name="placeLat"
+          value={schedule.placeLat}
+          onChange={handleInput}
+        />
+        <br />
+        경도 :{" "}
+        <input
+          type="text"
+          name="placeLon"
+          value={schedule.placeLon}
+          onChange={handleInput}
+        />
+        <br />
         가는곳 :{" "}
         <input
           type="text"

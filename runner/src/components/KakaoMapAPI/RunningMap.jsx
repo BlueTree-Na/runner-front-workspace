@@ -15,7 +15,10 @@ const RunningMap = (props) => {
   useEffect(() => {
     const container = document.getElementById(`running${mapId}`);
     const options = {
-      center: new kakao.maps.LatLng(lat, lng),
+      center: new kakao.maps.LatLng(
+        lat ? lat : 33.450701,
+        lng ? lng : 126.570667
+      ),
       level: 4,
     };
     const map = new kakao.maps.Map(container, options);

@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { format } from "date-fns";
+import { AuthContext } from "../member/context/AuthContext";
 
 export const PostTitle = styled.a`
   font-size: 1.2em;
@@ -75,12 +76,17 @@ export const Message = styled.p`
 
 const ScheduleList = () => {
   const [page, setPage] = useState(0);
+  const { auth } = useContext(AuthContext);
   const navi = useNavigate();
   const [scheduleList, setScheduleList] = useState([]);
 
   useEffect(() => {
     axios
-      .get(`http://localhost/schedule`, { params: { page: page } })
+      .get(
+        `http://localhost/schedule`,
+        { params: { page: page } },
+        { headers: `Bearer ${auth.accessToken}` }
+      )
       .then((response) => {
         console.log(response);
 
@@ -93,11 +99,11 @@ const ScheduleList = () => {
     setPage((page) => page + 1);
   };
 
-  const handleInsertSchedule = () => {};
-
   return (
     <>
-      <h1>일정 목록</h1>
+      <br />
+      <h1 align="center">일정 목록</h1>
+
       <LoadMoreButton onClick={() => navi("/scheduleForm")}>
         일정등록
       </LoadMoreButton>
