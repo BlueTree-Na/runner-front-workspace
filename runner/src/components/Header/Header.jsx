@@ -61,7 +61,7 @@ function CollapsibleExample() {
               <Nav.Link onClick={() => goTo("/mypage")}>
                 {nickname}님 환영합니다
               </Nav.Link>
-              {/* ✅ 닉네임 클릭 시 마이페이지 이동 */}
+              {/* 닉네임 클릭 시 마이페이지 이동 */}
             </Nav>
           ) : (
             <Nav>

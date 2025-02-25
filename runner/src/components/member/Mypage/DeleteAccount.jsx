@@ -33,6 +33,7 @@ const DeleteAccount = () => {
         },
       })
       .then(() => {
+        alert("탈퇴가 완료되었습니다.");
         logout();
         navigate("/");
       })

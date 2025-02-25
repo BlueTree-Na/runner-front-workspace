@@ -37,30 +37,46 @@ const Login = () => {
         userPwd: userPwd,
       })
       .then((response) => {
-        console.log("서버 응답:", response.data);
-        console.log("로그인 성공, 메인으로 이동");
-
         const { username, tokens } = response.data;
         login(username, tokens.accessToken, tokens.refreshToken);
         localStorage.setItem("nickname", username);
         alert(`${username}님 환영합니다!`);
-
-        navigate("/main"); // 또는 window.location.href = "/main";
+        navigate("/");
       })
-
       .catch((error) => {
-        console.log(error);
-        alert("로그인에 실패하였습니다. 아이디와 패스워드를 확인해주세요");
+        console.log("로그인 오류:", error);
+
+        if (error.response) {
+          const errorMessage =
+            error.response.data?.message ||
+            "로그인에 실패하였습니다. 아이디와 패스워드를 확인해주세요.";
+
+          if (error.response.status === 403) {
+            alert("🚨 " + errorMessage); // 탈퇴한 회원일 때
+          } else if (error.response.status === 401) {
+            alert("❌ " + errorMessage); // 존재하지 않는 회원일 때
+          } else {
+            alert(errorMessage);
+          }
+        } else {
+          alert("서버와 연결할 수 없습니다. 다시 시도해주세요.");
+        }
       });
   };
 
   // 네이버 로그인 URL 요청 및 이동
   const handleNaverLogin = async () => {
     try {
+      // 1) 백엔드에서 네이버 로그인 URL과 state를 받아옴
       const response = await axios.get(
         "http://localhost/members/naver/login-url"
       );
-      window.location.href = response.data; // 네이버 로그인 페이지로 이동
+
+      // 2) localStorage에 state를 저장
+      localStorage.setItem("naverState", response.data.state);
+
+      // 3) 네이버 로그인 페이지로 이동
+      window.location.href = response.data.naverLoginUrl;
     } catch (error) {
       console.error("네이버 로그인 URL을 가져오는 중 오류 발생:", error);
       alert("네이버 로그인 요청 중 오류가 발생했습니다.");
