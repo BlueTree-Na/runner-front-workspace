@@ -119,14 +119,8 @@ const ScheduleDetail = () => {
               lat={schedule.placeLat}
               lng={schedule.placeLon}
               mapId={1}
+              placeName={schedule.place}
             />
-            가는곳 :{" "}
-            <input
-              type="text"
-              value={schedule.place}
-              name="place"
-              onChange={handleInput}
-            ></input>
             <br />
             장소 주소:{" "}
             {schedule.placeAddr && (
@@ -158,6 +152,7 @@ const ScheduleDetail = () => {
               이전으로
             </AddButton>
           </form>
+          <br />
           <div>
             <AddButton onClick={handleScheduleEncount}>일정 참여</AddButton>
           </div>

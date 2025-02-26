@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 const { kakao } = window;
 
 const RunningMap = (props) => {
-  const { lat, lng, mapId } = { ...props };
+  const { lat, lng, mapId, placeName } = { ...props };
 
   const script = document.createElement("script");
 
@@ -28,6 +28,16 @@ const RunningMap = (props) => {
     });
 
     marker.setMap(map);
+
+    const infowindow = new kakao.maps.InfoWindow({
+      content: `<div style="padding:5px; color:black;">${
+        placeName ? placeName : " "
+      }</div>`,
+    });
+
+    infowindow.open(map, marker);
+
+    marker.setMap(map);
   }, [lat, lng]);
 
   return (
@@ -36,6 +46,7 @@ const RunningMap = (props) => {
         id={`running${mapId}`}
         style={{ width: "740px", height: "360px" }}
       ></div>
+      <div id="clickLatlng"></div>
     </>
   );
 };

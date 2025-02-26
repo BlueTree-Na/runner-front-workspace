@@ -16,8 +16,7 @@ export const PostTitle = styled.a`
 `;
 
 export const LoadMoreButton = styled.button`
-  display: block;
-  margin: 20px auto 0;
+  display: inline-block;
   padding: 10px 30px;
   background-color: #3498db;
   color: #ffffff;
@@ -104,9 +103,11 @@ const ScheduleList = () => {
       <br />
       <h1 align="center">일정 목록</h1>
 
-      <LoadMoreButton onClick={() => navi("/scheduleForm")}>
-        일정등록
-      </LoadMoreButton>
+      <div align="center">
+        <LoadMoreButton onClick={() => navi("/scheduleForm")}>
+          일정등록
+        </LoadMoreButton>
+      </div>
 
       {scheduleList.map((schedule) => {
         return (

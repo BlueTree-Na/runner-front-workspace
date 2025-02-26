@@ -1,34 +1,21 @@
 import RunningMap from "../KakaoMapAPI/RunningMap";
-import { AddButton, ListDiv } from "./ScheduleList";
+import ScheduleList, { AddButton, ListDiv } from "./ScheduleList";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useContext } from "react";
 import { AuthContext } from "../member/context/AuthContext";
+import RunningMapList from "../RunningCourse/RunningMapList";
+
 const kakao = window;
 
 const ScheduleForm = () => {
   const [schedule, setSchedule] = useState({});
   const { auth } = useContext(AuthContext);
-
-  // setSchedule(() => {
-  //   return { ...schedule, scheduleWriter: auth.nickname };
-  // });
-
-  useEffect(() => {
-    kakao.maps.event.addListener(map, "click", function (mouseEvent) {
-      const latlng = mouseEvent.latLng;
-      marker.setPosition(latlng);
-      // const message = `클릭한 위치의 위도는 ${latlng.getLat()} 이고, 경도는 ${latlng.getLng()} 입니다`;
-
-      // const resultDiv = document.getElementById("clickLatlng");
-      // resultDiv.innerHTML = message;
-    });
-  }, []);
+  const [course, setCourse] = useState();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    // console.log(name);
-    // console.log(value);
+
     setSchedule((schedule) => {
       return {
         ...schedule,
@@ -48,7 +35,7 @@ const ScheduleForm = () => {
     <ListDiv>
       <h2>일정 등록</h2>
       <form method="post" onSubmit={handleScheduleInsertForm}>
-        <input type="hidden" name="scheduleWriter" value={auth.nickname} />
+        <input type="hidden" name="scheduleWriter" value={auth.username} />
         <br />
         제목 :{" "}
         <input
@@ -81,15 +68,7 @@ const ScheduleForm = () => {
           onChange={handleInput}
         ></input>
         <br />
-        {
-          <ListDiv>
-            <RunningMap
-              lat={schedule.placeLat}
-              lng={schedule.placeLon}
-              mapId={1}
-            />
-          </ListDiv>
-        }
+        <RunningMapList setCourse={setCourse} />
         위도 :{" "}
         <input
           type="text"
