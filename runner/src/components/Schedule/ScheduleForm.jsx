@@ -1,25 +1,31 @@
 import RunningMap from "../KakaoMapAPI/RunningMap";
-import { AddButton, ListDiv } from "./ScheduleList";
+import ScheduleList, { AddButton, ListDiv } from "./ScheduleList";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useContext } from "react";
+import { AuthContext } from "../member/context/AuthContext";
+import RunningMapList from "../RunningCourse/RunningMapList";
+
+const kakao = window;
 
 const ScheduleForm = () => {
   const [schedule, setSchedule] = useState({});
+  const { auth } = useContext(AuthContext);
+  const [course, setCourse] = useState();
 
   const handleInput = (e) => {
     const { name, value } = e.target;
-    // console.log(name);
-    // console.log(value);
+
     setSchedule((schedule) => {
       return {
         ...schedule,
         [name]: value,
       };
     });
-    // console.log(schedule);
+    console.log(schedule);
   };
 
-  const handleScheduleInsert = (e) => {
+  const handleScheduleInsertForm = (e) => {
     e.preventDefault();
 
     axios.post();
@@ -27,9 +33,9 @@ const ScheduleForm = () => {
 
   return (
     <ListDiv>
-      <h2>일정 세부 정보</h2>
-      <form method="post" onSubmit={handleScheduleInsert}>
-        작성자 : <input type="text" value={schedule.scheduleWriter}></input>
+      <h2>일정 등록</h2>
+      <form method="post" onSubmit={handleScheduleInsertForm}>
+        <input type="hidden" name="scheduleWriter" value={auth.username} />
         <br />
         제목 :{" "}
         <input
@@ -61,7 +67,24 @@ const ScheduleForm = () => {
           name="maxIncount"
           onChange={handleInput}
         ></input>
-        <RunningMap lat={schedule.placeLat} lng={schedule.placeLon} mapId={1} />
+        <br />
+        <RunningMapList setCourse={setCourse} />
+        위도 :{" "}
+        <input
+          type="text"
+          name="placeLat"
+          value={schedule.placeLat}
+          onChange={handleInput}
+        />
+        <br />
+        경도 :{" "}
+        <input
+          type="text"
+          name="placeLon"
+          value={schedule.placeLon}
+          onChange={handleInput}
+        />
+        <br />
         가는곳 :{" "}
         <input
           type="text"
